@@ -22,48 +22,25 @@
 		<categories>[]</categories>
 		<fields>[]</fields>
 	</properties>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>3.2.0</version>
-			</plugin>
-			<plugin>
-				<groupId>org.mule.tools.maven</groupId>
-				<artifactId>mule-maven-plugin</artifactId>
-				<version>3.8.6</version>
-				<extensions>true</extensions>
-				<configuration>
-					<classifier>mule-application</classifier>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.mule.tools.maven</groupId>
-				<artifactId>mule-maven-plugin</artifactId>
-				<version>${mule.maven.plugin.version}</version>
-				<extensions>true</extensions>
-				<configuration>
-					<cloudhub2Deployment>
-						<uri>https://anypoint.mulesoft.com</uri>
-						<provider>MC</provider>
-						<environment>Sandbox</environment>
-						<target>Cloudhub-US-East-2</target>
-						<muleVersion>4.4.0</muleVersion>
-						<username>Sanju6410</username>
-						<password>Sanju6410@</password>
-						<applicationName>san</applicationName>
-						<businessGroupId>50b8e791-efa1-4e4b-8fdf-9e80af30ecf9</businessGroupId>
-						<replicas>1</replicas>
-						<vCores>0.1</vCores>
-					</cloudhub2Deployment>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-
-	<dependencies>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-clean-plugin</artifactId>
+                <version>3.2.0</version>
+            </plugin>
+            <plugin>
+                <groupId>org.mule.tools.maven</groupId>
+                <artifactId>mule-maven-plugin</artifactId>
+                <version>${mule.maven.plugin.version}</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <classifier>mule-application</classifier>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+   <dependencies>
 		<dependency>
 			<groupId>org.mule.connectors</groupId>
 			<artifactId>mule-http-connector</artifactId>
@@ -118,8 +95,118 @@
 			<classifier>mule-plugin</classifier>
 		</dependency>
 	</dependencies>
-
-	<repositories>
+    <profiles>
+        <!-- Dev Profile -->
+        <profile>
+            <id>dev</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mule.tools.maven</groupId>
+                        <artifactId>mule-maven-plugin</artifactId>
+                        <version>${mule.maven.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <cloudhub2Deployment>
+                                <uri>https://anypoint.mulesoft.com</uri>
+                                <provider>MC</provider>
+                                <environment>dev</environment>
+                                <target>Cloudhub-US-East-2</target>
+                                <muleVersion>4.4.0</muleVersion>
+                                <username>${cloudhub.username}</username>
+                                <password>${cloudhub.password}</password>
+                                <applicationName>dev-app</applicationName>
+                                <businessGroupId>${env.BUSINESS_GROUP_ID}</businessGroupId>
+                                <replicas>1</replicas>
+                                <vCores>0.1</vCores>
+                            </cloudhub2Deployment>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>deploy-cloudhub</id>
+                                <phase>deploy</phase>
+                                <goals>
+                                    <goal>deploy</goal>
+                                </goals>
+                                <!-- Specify the profiles that should be activated for the deployment -->
+                                <configuration>
+                                    <profiles>dev</profiles>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Test Profile -->
+        <profile>
+            <id>test</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mule.tools.maven</groupId>
+                        <artifactId>mule-maven-plugin</artifactId>
+                        <version>${mule.maven.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <cloudhub2Deployment>
+                                <uri>https://anypoint.mulesoft.com</uri>
+                                <provider>MC</provider>
+                                <environment>test</environment>
+                                <target>Cloudhub-US-East-2</target>
+                                <muleVersion>4.4.0</muleVersion>
+                                <username>${cloudhub.username}</username>
+                                <password>${cloudhub.password}</password>
+                                <applicationName>test-app</applicationName>
+                                <businessGroupId>${env.BUSINESS_GROUP_ID}</businessGroupId>
+                                <replicas>1</replicas>
+                                <vCores>0.1</vCores>
+                            </cloudhub2Deployment>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <!-- Prod Profile -->
+        <profile>
+            <id>prod</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.mule.tools.maven</groupId>
+                        <artifactId>mule-maven-plugin</artifactId>
+                        <version>${mule.maven.plugin.version}</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <cloudhub2Deployment>
+                                <uri>https://anypoint.mulesoft.com</uri>
+                                <provider>MC</provider>
+                                <environment>prod</environment>
+                                <target>Cloudhub-US-East-2</target>
+                                <muleVersion>4.4.0</muleVersion>
+                                <username>${cloudhub.username}</username>
+                                <password>${cloudhub.password}</password>
+                                <applicationName>production-app</applicationName>
+                                <businessGroupId>${env.BUSINESS_GROUP_ID}</businessGroupId>
+                                <replicas>1</replicas>
+                                <vCores>0.1</vCores>
+                            </cloudhub2Deployment>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+    <repositories>
 		<repository>
 			<id>anypoint-exchange-v3</id>
 			<name>Anypoint Exchange</name>
